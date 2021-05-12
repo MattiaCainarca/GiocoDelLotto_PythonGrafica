@@ -4,6 +4,7 @@ from datetime import datetime
 import numpy as np
 import os.path
 
+
 fields = ('Codice Fiscale', 'Tipo Di Giocata', 'Numeri', 'Ruota', 'Puntata', 'Risultato')
 entries = {}
 valori_utente = ['0', '0', '0', '0', '0', '0']
