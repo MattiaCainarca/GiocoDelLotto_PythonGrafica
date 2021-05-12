@@ -4,15 +4,15 @@ from datetime import datetime
 import numpy as np
 import os.path
 
-
-fields = ('Codice Fiscale', 'Tipo Di Giocata', 'Numeri', 'Ruota', 'Puntata', 'Risultato')
-entries = {}
+campi = ('Codice Fiscale', 'Modalità', 'Numeri', 'Ruota', 'Puntata', 'Risultato')
+entrate_utente = {}
 valori_utente = ['0', '0', '0', '0', '0', '0']
-numeroCampi = 6
+numero_campi = 6
 
-modalita = ["ESTRATTO", "AMBO", "TERNO", "QUATERNA", "CINQUINA", "ESTRATTO SECCO", "AMBO SECCO", "TERNO SECCO", "QUATERNA SECCA", "CINQUINA SECCA"]
+modalita = ["ESTRATTO", "AMBO", "TERNO", "QUATERNA", "CINQUINA", "ESTRATTO SECCO", "AMBO SECCO", "TERNO SECCO",
+            "QUATERNA SECCA", "CINQUINA SECCA"]
 
-nomiRuote = ["TORINO", "MILANO", "VENEZIA", "GENOVA", "FIRENZE", "ROMA", "NAPOLI", "BARI", "PALERMO", "CAGLIARI",
+nomi_ruote = ["TORINO", "MILANO", "VENEZIA", "GENOVA", "FIRENZE", "ROMA", "NAPOLI", "BARI", "PALERMO", "CAGLIARI",
              "NAZIONALE"]
 
 vincite = [5, 25, 450, 12000, 600000, 55, 250, 4500, 120000, 6000000]
@@ -93,7 +93,7 @@ def controllaModalita(mod):  # L'utente sceglie la modalità con la quale vuole 
 
 
 def controllaRuota(ruota, mod):  # L'utente sceglie la ruota du cui vuole fare la sua puntata:
-    if ruota in nomiRuote or modalita.index(mod) < 6:
+    if ruota in nomi_ruote or modalita.index(mod) < 6:
         return "OK"
     elif ruota == '0':
         return "Inserire una ruota!"
@@ -115,7 +115,7 @@ def controllaNumeri(numeri_da_giocare,
         return "Numeri inseriti non sufficienti"
     else:
         for i in range(numeri_da_giocare):
-            if (numeri_scelti[i] < '1') or (numeri_scelti[i] > '90') or not(numeriDoppi(numeri_scelti, i)):
+            if (numeri_scelti[i] < '1') or (numeri_scelti[i] > '90') or not (numeriDoppi(numeri_scelti, i)):
                 return "Numeri non Validi"
         else:
             return 'OK'
@@ -142,7 +142,7 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta,
     if m < 6:
         indovinati = controlloVinciteEstrazioni(num_split, m, num_estratti)
     else:
-        r = nomiRuote.index(r_scelta)
+        r = nomi_ruote.index(r_scelta)
         indovinati = controlloVinciteEstrazioniSecche(num_split, num_estratti[r])
     if indovinati > 0:
         return calcoloVincita(indovinati, m, int(punt_scelta))
@@ -163,7 +163,8 @@ def controlloVinciteEstrazioni(num_utente, mod,
     return trovati
 
 
-def controlloVinciteEstrazioniSecche(num_utente, num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
+def controlloVinciteEstrazioniSecche(num_utente,
+                                     num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
     for i in range(len(num_utente)):
         if not int(num_utente[i]) in num_vincenti:
             return 0
@@ -190,8 +191,8 @@ def aggiornaFileGiocatori(cod_fisc, num_utente,
 
 
 def stampaCampi():
-    for i in range(numeroCampi - 1):
-        valori_utente[i] = entries[fields[i]].get()
+    for i in range(numero_campi - 1):
+        valori_utente[i] = entrate_utente[campi[i]].get()
         valori_utente[i] = valori_utente[i].upper()
 
     salvaEstrazione()
@@ -211,29 +212,30 @@ def stampaCampi():
     else:
         test = "Somma scommessa non valida"
 
-    entries[fields[numeroCampi - 1]].delete(0, tk.END)
-    entries[fields[numeroCampi - 1]].insert(0, test)
+    entrate_utente[campi[numero_campi - 1]].delete(0, tk.END)
+    entrate_utente[campi[numero_campi - 1]].insert(0, test)
 
 
-def makeform(root, fields):
+def disegnaFinestra(root, fields):
     root.iconphoto(False, tk.PhotoImage(file='logolotto.png'))
     root.winfo_toplevel().title("Gioco del Lotto")
     for field in fields:
         row = tk.Frame(root)
-        lab = tk.Label(row, width=15, text=field + ": ", anchor='w')
-        ent = tk.Entry(row, width=30)
+        lab = tk.Label(row, width=15, text=field + ": ", anchor='w', font=("Arial", 20), fg='white', bg='black')
+        ent = tk.Entry(row, width=30, font=("Arial", 20))
         ent.insert(0, '0')
-        row.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+        row.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
         lab.pack(side=tk.LEFT)
         ent.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
-        entries[field] = ent
-    return entries
+        entrate_utente[field] = ent
+    return entrate_utente
 
 
-root = tk.Tk()
-entries = makeform(root, fields)
-b1 = tk.Button(root, text='Esci', command=root.quit)
-b1.pack(side=tk.RIGHT, padx=5, pady=5)
-b2 = tk.Button(root, text='Gioca', command=lambda: stampaCampi())
-b2.pack(side=tk.RIGHT, padx=5, pady=5)
-root.mainloop()
+finestra = tk.Tk()
+entrate_utente = disegnaFinestra(finestra, campi)
+finestra.configure(bg='black')
+b1 = tk.Button(finestra, text='Esci', font=("Arial", 20), command=finestra.quit)
+b1.pack(side=tk.RIGHT, padx=10, pady=10)
+b2 = tk.Button(finestra, text='Gioca', font=("Arial", 20), command=lambda: stampaCampi())
+b2.pack(side=tk.RIGHT, padx=10, pady=10)
+finestra.mainloop()
