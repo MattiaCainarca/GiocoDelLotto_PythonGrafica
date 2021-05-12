@@ -19,7 +19,7 @@ vincite = [5, 25, 450, 12000, 600000, 55, 250, 4500, 120000, 6000000]
 
 
 def calcoloCodiceFiscale(cod_fisc):  # Controlla che che il codice fiscale inserito sia corretto:
-    if cod_fisc == '':
+    if cod_fisc == '0':
         return "Inserire un codice fiscale!"
     elif not codicefiscale.isvalid(cod_fisc):
         return "CF errato"
@@ -84,7 +84,7 @@ def generaNumeriRuote():  # Genera 5 numeri compresi tra 0 e 90 diversi per ogni
 
 
 def controllaModalita(mod):  # L'utente sceglie la modalità con la quale vuole fare la sua puntata:
-    if mod == '':
+    if mod == '0':
         return "Inserire una modalità!"
     elif mod in modalita:
         return "OK"
@@ -95,7 +95,7 @@ def controllaModalita(mod):  # L'utente sceglie la modalità con la quale vuole 
 def controllaRuota(ruota, mod):  # L'utente sceglie la ruota du cui vuole fare la sua puntata:
     if ruota in nomiRuote or modalita.index(mod) < 6:
         return "OK"
-    elif ruota == '':
+    elif ruota == '0':
         return "Inserire una ruota!"
     else:
         return "Ruota non esistente"
@@ -140,10 +140,10 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta,
     num_split = splitNumeri(num_scelti)
     m = modalita.index(mod_scelta) + 1
     if m < 6:
-        indovinati = controlloVinciteEstrazioni(str(num_split), m, str(num_estratti))
+        indovinati = controlloVinciteEstrazioni(num_split, m, num_estratti)
     else:
         r = nomiRuote.index(r_scelta)
-        indovinati = controlloVinciteEstrazioniSecche(str(num_split), r, str(num_estratti[r]))
+        indovinati = controlloVinciteEstrazioniSecche(num_split, num_estratti[r])
     if indovinati > 0:
         return calcoloVincita(indovinati, m, int(punt_scelta))
     else:
@@ -155,20 +155,17 @@ def controlloVinciteEstrazioni(num_utente, mod,
     trovati = 0
     for i in range(10):
         trovati_interni = 0
-        for j in range(len(num_utente)):
-            if num_utente[j] in num_vincenti[i]:
+        for j in range(mod):
+            if int(num_utente[j]) in num_vincenti[i]:
                 trovati_interni += 1
         if trovati_interni >= mod:
             trovati += 1
     return trovati
 
 
-def controlloVinciteEstrazioniSecche(num_utente, ruota, num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
-    print("num utente", num_utente)
-    print("num vincenti", num_vincenti)
-    print("len", len(num_utente))
+def controlloVinciteEstrazioniSecche(num_utente, num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
     for i in range(len(num_utente)):
-        if not num_utente[i] in num_vincenti:
+        if not int(num_utente[i]) in num_vincenti:
             return 0
     return 1
 
@@ -195,8 +192,7 @@ def aggiornaFileGiocatori(cod_fisc, num_utente,
 def stampaCampi():
     for i in range(numeroCampi - 1):
         valori_utente[i] = entries[fields[i]].get()
-        stringa = valori_utente[i]
-        valori_utente[i] = stringa.upper()
+        valori_utente[i] = valori_utente[i].upper()
 
     salvaEstrazione()
     if int(valori_utente[4]) > 0:
@@ -226,6 +222,7 @@ def makeform(root, fields):
         row = tk.Frame(root)
         lab = tk.Label(row, width=15, text=field + ": ", anchor='w')
         ent = tk.Entry(row, width=30)
+        ent.insert(0, '0')
         row.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
         lab.pack(side=tk.LEFT)
         ent.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
