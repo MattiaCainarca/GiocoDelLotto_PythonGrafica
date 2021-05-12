@@ -27,7 +27,7 @@ def calcoloCodiceFiscale(cod_fisc):  # Controlla che che il codice fiscale inser
         if verificaEta(cod_fisc):
             return "OK"
         else:
-            return "Sei Minorenne"
+            return "Sei Minorenne!"
 
 
 def verificaEta(cod_fisc):  # Viene verificato se l'utente ha almeno 18 anni:
@@ -37,7 +37,7 @@ def verificaEta(cod_fisc):  # Viene verificato se l'utente ha almeno 18 anni:
     if eta >= 18:
         return 1
     else:
-        print("Mi dispiace non hai un'età sufficiente per giocare.")
+        print("Mi dispiace non hai un'età sufficiente per giocare!")
         return 0
 
 
@@ -69,7 +69,7 @@ def salvaEstrazione():  # Viene salvata la matrice su un file con la data del gi
         file.close()
 
 
-def fileGiornoOdierno():
+def fileGiornoOdierno():  # Ritorna il nome del file dei numeri vincenti giornaliero:
     now = datetime.now()
     nome_file = now.strftime("NumeriVincenti_%d-%m-%Y")
     nome_file = f'{nome_file}.txt'
@@ -89,7 +89,7 @@ def controllaModalita(mod):  # L'utente sceglie la modalità con la quale vuole 
     elif mod in modalita:
         return "OK"
     else:
-        return "Modalita non esistente"
+        return "Modalita non esistente!"
 
 
 def controllaRuota(ruota, mod):  # L'utente sceglie la ruota du cui vuole fare la sua puntata:
@@ -98,10 +98,10 @@ def controllaRuota(ruota, mod):  # L'utente sceglie la ruota du cui vuole fare l
     elif ruota == '0':
         return "Inserire una ruota!"
     else:
-        return "Ruota non esistente"
+        return "Ruota non esistente!"
 
 
-def splitNumeri(numeri):
+def splitNumeri(numeri):  # Viene creato un array dividendo la stringa:
     return numeri.split(' ')
 
 
@@ -111,17 +111,19 @@ def controllaNumeri(numeri_da_giocare,
     numeri_da_giocare = modalita.index(mod) + 1
     if numeri_da_giocare > 5:
         numeri_da_giocare -= 5
-    if len(numeri_scelti) != numeri_da_giocare:
-        return "Numeri inseriti non sufficienti"
+    if len(numeri_scelti) < numeri_da_giocare:
+        return "Numeri inseriti non sufficienti!"
+    elif len(numeri_scelti) > numeri_da_giocare:
+        return "Sono stati inseriti troppi numeri!"
     else:
         for i in range(numeri_da_giocare):
             if (numeri_scelti[i] < '1') or (numeri_scelti[i] > '90') or not (numeriDoppi(numeri_scelti, i)):
-                return "Numeri non Validi"
+                return "Numeri non Validi!"
         else:
             return 'OK'
 
 
-def numeriDoppi(numeri, i):
+def numeriDoppi(numeri, i):  # Ritorna 0 se trova due numeri uguali, oppure se i numeri sono tutti diversi ritorna 1:
     for j in range(i):
         if numeri[j] == numeri[i]:
             return 0
@@ -147,7 +149,7 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta,
     if indovinati > 0:
         return calcoloVincita(indovinati, m, int(punt_scelta))
     else:
-        return "Non hai trovato nessuno numero"
+        return "Non hai trovato nessuno numero!"
 
 
 def controlloVinciteEstrazioni(num_utente, mod,
@@ -177,7 +179,7 @@ def calcoloVincita(trovati, mod_scelta, punt_scelta):  # Viene calcolata la vinc
 
 def aggiornaFileGiocatori(cod_fisc, num_utente,
                           ammontare):  # Viene aggiunto al file dei giocatori, il codice fiscale dell'utente con la rispettiva vincita:
-    if ammontare == "Non hai trovato nessuno numero":
+    if ammontare == "Non hai trovato nessuno numero!":
         ammontare = 0
     now = datetime.now()
     data = now.strftime("%d-%m-%Y")
@@ -190,7 +192,7 @@ def aggiornaFileGiocatori(cod_fisc, num_utente,
     file_utenti.close()
 
 
-def stampaCampi():
+def gioca():  # Controlla il gioco:
     for i in range(numero_campi - 1):
         valori_utente[i] = entrate_utente[campi[i]].get()
         valori_utente[i] = valori_utente[i].upper()
@@ -210,13 +212,13 @@ def stampaCampi():
                                                 valori_utente[4])
                         aggiornaFileGiocatori(valori_utente[0], valori_utente[2], test)
     else:
-        test = "Somma scommessa non valida"
+        test = "Somma scommessa non valida!"
 
     entrate_utente[campi[numero_campi - 1]].delete(0, tk.END)
     entrate_utente[campi[numero_campi - 1]].insert(0, test)
 
 
-def disegnaFinestra(root, fields):
+def disegnaFinestra(root, fields):  # Disegna la schermata di gioco:
     root.iconphoto(False, tk.PhotoImage(file='logolotto.png'))
     root.winfo_toplevel().title("Gioco del Lotto")
     for field in fields:
@@ -236,6 +238,6 @@ entrate_utente = disegnaFinestra(finestra, campi)
 finestra.configure(bg='black')
 b1 = tk.Button(finestra, text='Esci', font=("Arial", 20), command=finestra.quit)
 b1.pack(side=tk.RIGHT, padx=10, pady=10)
-b2 = tk.Button(finestra, text='Gioca', font=("Arial", 20), command=lambda: stampaCampi())
+b2 = tk.Button(finestra, text='Gioca', font=("Arial", 20), command=lambda: gioca())
 b2.pack(side=tk.RIGHT, padx=10, pady=10)
 finestra.mainloop()
