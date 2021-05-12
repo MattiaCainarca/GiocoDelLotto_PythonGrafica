@@ -13,7 +13,7 @@ numeroCampi = 6
 modalita = ["ESTRATTO", "AMBO", "TERNO", "QUATERNA", "CINQUINA", "ESTRATTO SECCO", "AMBO SECCO", "TERNO SECCO", "QUATERNA SECCA", "CINQUINA SECCA"]
 
 nomiRuote = ["TORINO", "MILANO", "VENEZIA", "GENOVA", "FIRENZE", "ROMA", "NAPOLI", "BARI", "PALERMO", "CAGLIARI",
-             "RUOTA NAZIONALE"]
+             "NAZIONALE"]
 
 vincite = [5, 25, 450, 12000, 600000, 55, 250, 4500, 120000, 6000000]
 
@@ -143,7 +143,7 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta,
         indovinati = controlloVinciteEstrazioni(str(num_split), m, str(num_estratti))
     else:
         r = nomiRuote.index(r_scelta)
-        indovinati = controlloVinciteEstrazioniSecche(str(num_split), r, str(num_estratti))
+        indovinati = controlloVinciteEstrazioniSecche(str(num_split), r, str(num_estratti[r]))
     if indovinati > 0:
         return calcoloVincita(indovinati, m, int(punt_scelta))
     else:
@@ -164,8 +164,11 @@ def controlloVinciteEstrazioni(num_utente, mod,
 
 
 def controlloVinciteEstrazioniSecche(num_utente, ruota, num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
+    print("num utente", num_utente)
+    print("num vincenti", num_vincenti)
+    print("len", len(num_utente))
     for i in range(len(num_utente)):
-        if not num_utente[i] in num_vincenti[ruota]:
+        if not num_utente[i] in num_vincenti:
             return 0
     return 1
 
@@ -217,6 +220,7 @@ def stampaCampi():
 
 
 def makeform(root, fields):
+    root.iconphoto(False, tk.PhotoImage(file='logolotto.png'))
     root.winfo_toplevel().title("Gioco del Lotto")
     for field in fields:
         row = tk.Frame(root)
