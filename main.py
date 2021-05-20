@@ -13,7 +13,7 @@ modalita = ["ESTRATTO", "AMBO", "TERNO", "QUATERNA", "CINQUINA", "ESTRATTO SECCO
             "QUATERNA SECCA", "CINQUINA SECCA"]
 
 nomi_ruote = ["TORINO", "MILANO", "VENEZIA", "GENOVA", "FIRENZE", "ROMA", "NAPOLI", "BARI", "PALERMO", "CAGLIARI",
-             "NAZIONALE"]
+              "NAZIONALE"]
 
 vincite = [5, 25, 450, 12000, 600000, 55, 250, 4500, 120000, 6000000]
 
@@ -236,8 +236,8 @@ def disegnaFinestra(root, fields):  # Disegna la schermata di gioco:
 finestra = tk.Tk()
 entrate_utente = disegnaFinestra(finestra, campi)
 finestra.configure(bg='black')
-b1 = tk.Button(finestra, text='Esci', font=("Arial", 20), command=finestra.quit)
+b1 = tk.Button(finestra, text='Esci', font=("Arial", 20), command=finestra.quit, borderwidth=5, relief="ridge")
 b1.pack(side=tk.RIGHT, padx=10, pady=10)
-b2 = tk.Button(finestra, text='Gioca', font=("Arial", 20), command=lambda: gioca())
+b2 = tk.Button(finestra, text='Gioca', font=("Arial", 20), command=lambda: gioca(), borderwidth=5, relief="ridge")
 b2.pack(side=tk.RIGHT, padx=10, pady=10)
 finestra.mainloop()
